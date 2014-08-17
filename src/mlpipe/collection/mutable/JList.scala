@@ -17,8 +17,8 @@
 package mlpipe.collection.mutable
 
 import java.{util ⇒ ju}
+
 import scala.collection.JavaConverters._
-import scala.collection.Seq
 
 /**
  *
@@ -26,5 +26,5 @@ import scala.collection.Seq
  */
 object JList {
   @inline final def empty[A]: ju.List[A] = new ju.ArrayList[A]()
-  @inline final def ofSeq[A]: Seq[A] ⇒ ju.List[A] = _.asJava
+  @inline final def ofSeq[A]: scala.collection.Seq[A] ⇒ ju.List[A] = _.asJava
 }

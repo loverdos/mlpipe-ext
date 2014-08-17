@@ -22,7 +22,7 @@ import scala.collection.GenTraversableOnce
  *
  * @author Christos KK Loverdos <loverdos@gmail.com>
  */
-object PTraversable {
+object Traversable {
   @inline final def filter[A](p: (A) ⇒ Boolean): Traversable[A] ⇒ Traversable[A] = _.filter(p)
 
   @inline final def find[A](p: (A) ⇒ Boolean): Traversable[A] ⇒ Option[A] = _.find(p)

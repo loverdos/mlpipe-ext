@@ -20,7 +20,7 @@ package mlpipe.collection.mutable
  *
  * @author Christos KK Loverdos <loverdos@gmail.com>
  */
-object PArray {
+object Array {
   @inline final def iter[A](f: (A) ⇒ Unit): Array[A] ⇒ Unit = _.foreach(f)
   @inline final def drop[A](n: Int): Array[A] ⇒ Array[A] = _.drop(n)
 }

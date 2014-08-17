@@ -22,7 +22,7 @@ import scala.collection.Iterable
  *
  * @author Christos KK Loverdos <loverdos@gmail.com>
  */
-object PList {
+object List {
   @inline final def filter[A](p: (A) ⇒ Boolean): List[A] ⇒ List[A] = _.filter(p)
 
   @inline final def map[A, B](f: (A) ⇒ B): List[A] ⇒ List[B] = _.map(f)

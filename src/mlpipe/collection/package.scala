@@ -5,33 +5,25 @@ package mlpipe
  * @author Christos KK Loverdos <loverdos@gmail.com>
  */
 package object collection {
-
-  // let (|>) x f = f x
-  implicit final class MLPipe[T](val x: T) extends AnyVal {
-    def |>[B](f: (T) ⇒ B) = f(x)
-  }
-
   // Fix Predef
   final type Seq[+A] = scala.collection.immutable.Seq[A]
-  final val Seq = scala.collection.immutable.Seq
+  final type Set[A] = scala.collection.immutable.Set[A]
+  final type Map[A, +B] = scala.collection.immutable.Map[A, B]
+  final type Traversable[+A] = scala.collection.Traversable[A]
+
+  final val Seq = immutable.Seq
+  final val Set = immutable.Set
+  final val Map = immutable.Map
+  final val Stream = immutable.Stream
+  final val Traversable = generic.Traversable
 
   final val JList = mutable.JList
   final val JSet = mutable.JSet
 
-  final val PArray = collection.mutable.PArray
+  final val Array = collection.mutable.Array
 
-  final val IOption = immutable.POption
+  final val Option = immutable.Option
 
-  final val IFuture = concurrent.PFuture
-  final val IPromise = concurrent.PPromise
-
-  final val ISeq    = immutable.PSeq
-  final val IStream = immutable.PStream
-  final val ISet    = immutable.PSet
-  final val IMap    = immutable.PMap
-  final val ITraversable = generic.PTraversable
-
-  final val MSeq    = mutable.PSeq
-  final val MSet    = mutable.PSet
-
+  final val Future = concurrent.Future
+  final val Promise = concurrent.Promise
 }
