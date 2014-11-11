@@ -31,6 +31,8 @@ object Map {
 
   @inline final def find[A, B](p: ((A, B)) ⇒ Boolean): ScalaMap[A, B] ⇒ Option[(A, B)] = _.find(p)
 
+  @inline final def exists[A, B](p: ((A, B)) ⇒ Boolean): ScalaMap[A, B] ⇒ Boolean = _.exists(p)
+
   @inline final def findValue[A, B](p: ((A, B)) ⇒ Boolean): ScalaMap[A, B] ⇒ Option[B] = _.find(p).map(_._2)
 
   @inline final def findByKey[A, B](p: (A) ⇒ Boolean): ScalaMap[A, B] ⇒ Option[(A, B)] = _.find { case (k, _) ⇒ p(k) }

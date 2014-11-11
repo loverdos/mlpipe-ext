@@ -42,6 +42,8 @@ object Seq {
 
   @inline final def find[A](p: (A) ⇒ Boolean): ScalaSeq[A] ⇒ Option[A] = _.find(p)
 
+  @inline final def exists[A](p: (A) ⇒ Boolean): ScalaSeq[A] ⇒ Boolean = _.exists(p)
+
   @inline final def filterDefined[A]: ScalaSeq[Option[A]] ⇒ ScalaSeq[A] = _.withFilter(_.isDefined).map(_.get)
 
   @inline final def map[A, B](f: (A) ⇒ B): ScalaSeq[A] ⇒ ScalaSeq[B] = _.map(f)

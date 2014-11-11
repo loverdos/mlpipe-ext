@@ -32,6 +32,8 @@ object Set {
 
   @inline final def find[A](p: (A) ⇒ Boolean): ScalaSet[A] ⇒ Option[A] = _.find(p)
 
+  @inline final def exists[A](p: (A) ⇒ Boolean): ScalaSet[A] ⇒ Boolean = _.exists(p)
+
   @inline final def filterDefined[A]: ScalaSet[Option[A]] ⇒ ScalaSet[A] = _.withFilter(_.isDefined).map(_.get)
 
   @inline final def map[A, B](f: (A) ⇒ B): ScalaSet[A] ⇒ ScalaSet[B] = _.map(f)
