@@ -27,6 +27,8 @@ import scala.collection.immutable.{Seq ⇒ ScalaSeq}
 object Seq {
   import scala.language.higherKinds
 
+  @inline final def apply[A](): ScalaSeq[A] = ScalaSeq.empty[A]
+
   @inline final def empty[A]: ScalaSeq[A] = ScalaSeq.empty[A]
 
   @inline final def filter[A](p: (A) ⇒ Boolean): ScalaSeq[A] ⇒ ScalaSeq[A] = _.filter(p)

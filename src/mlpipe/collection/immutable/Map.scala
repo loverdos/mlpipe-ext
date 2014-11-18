@@ -25,6 +25,8 @@ import scala.collection.{Set ⇒ ScalaSet}
  * @author Christos KK Loverdos <loverdos@gmail.com>
  */
 object Map {
+  @inline final def apply[A, B](): ScalaMap[A, B] = ScalaMap.empty[A, B]
+
   @inline final def empty[A, B]: ScalaMap[A, B] = ScalaMap.empty[A, B]
 
   @inline final def filter[A, B](p: ((A, B)) ⇒ Boolean): ScalaMap[A, B] ⇒ ScalaMap[A, B] = _.filter(p)

@@ -25,6 +25,7 @@ import scala.collection.immutable.{Set ⇒ ScalaSet}
  * @author Christos KK Loverdos <loverdos@gmail.com>
  */
 object Set {
+  @inline final def apply[A](): ScalaSet[A] = ScalaSet.empty[A]
 
   @inline final def empty[A]: ScalaSet[A] = ScalaSet.empty[A]
 

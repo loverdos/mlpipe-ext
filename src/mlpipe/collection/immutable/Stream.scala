@@ -17,7 +17,7 @@
 package mlpipe
 package collection.immutable
 
-import scala.collection.immutable.{Stream ⇒ ScalaStream}
+import scala.collection.immutable.{Stream ⇒ ScalaStream, Map}
 
 import scala.collection.GenTraversableOnce
 
@@ -26,6 +26,10 @@ import scala.collection.GenTraversableOnce
  * @author Christos KK Loverdos <loverdos@gmail.com>
  */
 object Stream {
+  @inline final def apply[A](): ScalaStream[A] = ScalaStream.empty[A]
+
+  @inline final def empty[A]: ScalaStream[A] = ScalaStream.empty[A]
+
   @inline final def filter[A](p: (A) ⇒ Boolean): ScalaStream[A] ⇒ ScalaStream[A] = _.filter(p)
 
   @inline final def filterDefined[A]: Stream[Option[A]] ⇒ ScalaStream[A] = _.withFilter(_.isDefined).map(_.get)
