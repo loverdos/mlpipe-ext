@@ -23,7 +23,7 @@ package mlpipe
 object IString {
   @inline
   final def ifEmpty(alt: String): String ⇒ String = {
-      case "" ⇒ alt
-      case s  ⇒ s
-    }
+    case "" ⇒ alt
+    case s  ⇒ s
+  }
 }

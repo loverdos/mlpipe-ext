@@ -25,7 +25,7 @@ import scala.collection.{GenTraversableOnce, Map ⇒ ScalaMap, Seq ⇒ ScalaSeq,
 object Map {
   @inline final def filter[A, B](p: ((A, B)) ⇒ Boolean): ScalaMap[A, B] ⇒ ScalaMap[A, B] = _.filter(p)
 
-  @inline final def filterValues[A, B](p: ((A, B)) ⇒ Boolean): ScalaMap[A, B] ⇒ Seq[B] = _.filter(p).map(_._2).to[ScalaSeq]
+  @inline final def filterValues[A, B](p: ((A, B)) ⇒ Boolean): ScalaMap[A, B] ⇒ Seq[B] = _.filter(p).values.to[ScalaSeq]
 
   @inline final def filterByKey[A, B](p: (A) ⇒ Boolean): ScalaMap[A, B] ⇒ ScalaMap[A, B] = _.filter{ case (k, _) ⇒ p(k) }
 

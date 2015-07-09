@@ -71,6 +71,10 @@ object Future {
   @inline final def awaitResult[A](atMost: Duration): ScalaFuture[A] ⇒ A =
     Await.result(_, atMost)
 
+  @inline final def fold[Z, A](zero: Z)(f: (Z, A) ⇒ Z)
+                    (implicit ec: ExecutionContext = ExecutionContext.Implicits.global): Seq[ScalaFuture[A]] ⇒ ScalaFuture[Z] =
+    ScalaFuture.fold(_)(zero)(f)
+
   // ML-ish
   @inline final def ofValue[A]: A ⇒ ScalaFuture[A] = ScalaFuture.successful
 

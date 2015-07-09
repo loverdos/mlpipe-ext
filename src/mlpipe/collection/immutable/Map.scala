@@ -17,8 +17,8 @@
 package mlpipe.collection.immutable
 
 import scala.collection.immutable.{Map ⇒ ScalaMap}
-import scala.collection.{GenTraversableOnce, Seq, Set}
-import scala.collection.{Set ⇒ ScalaSet}
+import scala.collection.{GenTraversableOnce, Seq ⇒ ScalaSeq, Set ⇒ ScalaSet}
+import mlpipe.collection.Seq
 
 /**
  *
@@ -31,7 +31,7 @@ object Map {
 
   @inline final def filter[A, B](p: ((A, B)) ⇒ Boolean): ScalaMap[A, B] ⇒ ScalaMap[A, B] = _.filter(p)
 
-  @inline final def filterValues[A, B](p: ((A, B)) ⇒ Boolean): ScalaMap[A, B] ⇒ Seq[B] = _.filter(p).map(_._2).to[Seq]
+  @inline final def filterValues[A, B](p: ((A, B)) ⇒ Boolean): ScalaMap[A, B] ⇒ Seq[B] = _.filter(p).values.to[Seq]
 
   @inline final def filterByKey[A, B](p: (A) ⇒ Boolean): ScalaMap[A, B] ⇒ ScalaMap[A, B] = _.filter { case (k, _) ⇒ p(k) }
 
@@ -66,7 +66,7 @@ object Map {
   // ML-ish
   @inline final def iter[A, B](f: ((A, B)) ⇒ Unit): ScalaMap[A, B] ⇒ Unit = _.foreach(f)
 
-  @inline final def ofSeq[A, B]: Seq[(A, B)] ⇒ ScalaMap[A, B] = _.toMap
+  @inline final def ofSeq[A, B]: ScalaSeq[(A, B)] ⇒ ScalaMap[A, B] = _.toMap
 
   @inline final def ofSet[A, B]: Set[(A, B)] ⇒ ScalaMap[A, B] = _.toMap
 
@@ -119,7 +119,7 @@ object Map {
         ofFuncWithInitialMap(cachedMap + kv)(f)
     }
 
-  @inline final def ofFuncWithInitialKeys[K, V](allKeys: Set[K] = ScalaSet())(f: (K) ⇒ V): Map[K, V] =
+  @inline final def ofFuncWithInitialKeys[K, V](allKeys: ScalaSet[K] = ScalaSet())(f: (K) ⇒ V): Map[K, V] =
     new Map[K, V] {
       private[this] var cachedMap = ScalaMap[K, V]((for(k ← allKeys) yield (k, f(k))).toSeq:_*)
 
