@@ -17,7 +17,7 @@
 package mlpipe
 package collection.immutable
 
-import scala.collection.immutable.{Stream ⇒ ScalaStream, Map}
+import scala.collection.immutable.{Stream ⇒ ScalaStream, Map ⇒ ImMap}
 
 import scala.collection.GenTraversableOnce
 
@@ -52,7 +52,7 @@ object Stream {
 
   @inline final def partition[A](f: (A) ⇒ Boolean): ScalaStream[A] ⇒ (ScalaStream[A], ScalaStream[A]) = _.partition(f)
 
-  @inline final def groupBy[A, K](f: (A) ⇒ K): ScalaStream[A] ⇒ Map[K, ScalaStream[A]] = _.groupBy(f)
+  @inline final def groupBy[A, K](f: (A) ⇒ K): ScalaStream[A] ⇒ ImMap[K, ScalaStream[A]] = _.groupBy(f)
 
   @inline final def mkString[A](sep: String): ScalaStream[A] ⇒ String = _.mkString(sep)
 
@@ -76,15 +76,15 @@ object Stream {
 
   @inline final def ofArray[A]: Array[A] ⇒ ScalaStream[A] = _.toStream
 
-  @inline final def ofMap[A, B]: Map[A, B] ⇒ Stream[(A, B)] = _.toStream
+  @inline final def ofMap[A, B]: ImMap[A, B] ⇒ Stream[(A, B)] = _.toStream
 
-  @inline final def ofMapSortedValuesBy[A, B, C](sortBy: (B) ⇒ C)(implicit ord: Ordering[C]): Map[A, B] ⇒ Stream[B] =
-    it ⇒ it |> Seq.ofMapSortedValuesBy(sortBy) |> Stream.ofSeq
+  @inline final def ofMapValuesSortedBy[A, B, C](sortBy: (B) ⇒ C)(implicit ord: Ordering[C]): ImMap[A, B] ⇒ Stream[B] =
+    it ⇒ it |> Seq.ofMapValuesSortedBy(sortBy) |> Stream.ofSeq
 
-  @inline final def ofMapFilteredValuesByKey[A, B](p: (A) ⇒ Boolean): Map[A, B] ⇒ Stream[B] =
+  @inline final def ofMapFilteredValuesByKey[A, B](p: (A) ⇒ Boolean): ImMap[A, B] ⇒ Stream[B] =
     it ⇒ (for((k, v) ← it if p(k)) yield v).toStream
 
-  @inline final def ofMapValues[A, B]: Map[A, B] ⇒ Stream[B] = it ⇒ it.values.toStream
+  @inline final def ofMapValues[A, B]: ImMap[A, B] ⇒ Stream[B] = it ⇒ it.values.toStream
 
   @inline final def ofJava[E]: java.util.Collection[E] ⇒ Stream[E] = it ⇒ {
     import scala.collection.JavaConverters._
