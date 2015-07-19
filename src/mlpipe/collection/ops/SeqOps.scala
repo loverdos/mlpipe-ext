@@ -2,16 +2,27 @@
  * Copyright (c) 2013-2014 Christos KK Loverdos
  */
 
-package mlpipe.collection.ops
+package mlpipe.collection
+package ops
+
+import mlpipe._
 
 import scala.collection.generic.{CanBuildFrom, GenericCompanion}
-import scala.collection.{GenTraversableOnce, Seq ⇒ CSeq, Set ⇒ CSet, Map ⇒ CMap}
+import scala.collection.mutable.{Builder ⇒ MBuilder, Map ⇒ MMap, Set ⇒ MSet}
+import scala.collection.{GenTraversableOnce, Map ⇒ CMap, Seq ⇒ CSeq, Set ⇒ CSet}
 import scala.language.higherKinds
 
 trait SeqOps {
   type SeqImpl[X] <: CSeq[X]
-  val SeqImplC: GenericCompanion[SeqImpl]
-  implicit def canBuildFrom[A, B]: CanBuildFrom[CSeq[A], B, SeqImpl[B]]
+
+  // Our MapOps buddy. E.g. needed for groupBy
+  protected val MapBuddy: MapOps
+  type MapImpl[K, V] <: CMap[K, V] /*= MapBuddy.MapImpl[K, V]*/
+
+  protected val SeqImplC: GenericCompanion[SeqImpl]
+  protected implicit def canBuildFrom[A, B]: CanBuildFrom[CSeq[A], B, SeqImpl[B]]
+
+  final def unapplySeq[A](seqImpl: SeqImpl[A]): Some[SeqImpl[A]] = Some(seqImpl)
 
   final def apply[A](): SeqImpl[A] = SeqImplC.empty[A]
 
@@ -83,7 +94,13 @@ trait SeqOps {
     case None ⇒ apply()
   }
 
-  final def ofJava[A]: java.util.Collection[A] ⇒ SeqImpl[A] = it ⇒ {
+  final def ofJCollection[A]: java.util.Collection[A] ⇒ SeqImpl[A] = it ⇒ {
+    import scala.collection.JavaConverters._
+    it.asScala.to[SeqImpl]
+  }
+  final def ofJava[A]: java.util.Collection[A] ⇒ SeqImpl[A] = ofJCollection
+
+  final def ofJEnum[A]: java.util.Enumeration[A] ⇒ SeqImpl[A] = it ⇒ {
     import scala.collection.JavaConverters._
     it.asScala.to[SeqImpl]
   }
@@ -93,10 +110,27 @@ trait SeqOps {
 
   final def unique[A]: SeqImpl[A] ⇒ SeqImpl[A] =
     seq ⇒ {
-      val set = scala.collection.mutable.Set[A]()
+      val set = MSet[A]()
       for(i ← seq if !set.contains(i)) yield {
         set += i
         i
       }
     }
+
+  def groupBy[A, K](f: (A) ⇒ K): (SeqImpl[A]) ⇒ MapImpl[K, SeqImpl[A]] = seq ⇒ {
+    val mmap = scala.collection.mutable.Map.empty[K, MBuilder[A, SeqImpl[A]]]
+
+    seq |> generic.Seq.iter { a ⇒
+      val k = f(a)
+      val builder = mmap.getOrElseUpdate(k, SeqImplC.newBuilder)
+      builder += a
+    }
+
+    val resultMapBuilder = this.MapBuddy.newBuilder[K, SeqImpl[A]]
+    mmap |> mutable.Map.iter { case (k, builder) ⇒
+      resultMapBuilder += k → builder.result()
+    }
+
+    resultMapBuilder.result().asInstanceOf[MapImpl[K, SeqImpl[A]]]
+  }
 }

@@ -15,22 +15,28 @@
  */
 
 package mlpipe.collection
-package generic
 
-import mlpipe.collection.ops.{MapOps, SeqOps}
-
-import scala.collection.generic.{CanBuildFrom, GenericCompanion}
-import scala.collection.{Seq ⇒ CSeq, Map ⇒ CMap}
+import java.{util ⇒ ju}
 
 /**
  *
  * @author Christos KK Loverdos <loverdos@gmail.com>
  */
-object Seq extends SeqOps {
-  final type SeqImpl[X] = CSeq[X]
-  final type MapImpl[K, V] = CMap[K, V]
+object JEnum {
+  final def iter[A](f: (A) ⇒ Unit): ju.Enumeration[A] ⇒ Unit =
+    enum ⇒ {
+      while(enum.hasMoreElements) {
+        f(enum.nextElement())
+      }
+    }
 
-  protected val MapBuddy: MapOps = generic.Map
-  protected final implicit def canBuildFrom[A, B] = CSeq.canBuildFrom.asInstanceOf[CanBuildFrom[CSeq[A], B, SeqImpl[B]]]
-  protected final val SeqImplC: GenericCompanion[CSeq] = CSeq
+  def filterIter[A](p: (A) ⇒ Boolean)(f: (A) ⇒ Unit): ju.Enumeration[A] ⇒ Unit =
+    enum ⇒ {
+      while(enum.hasMoreElements) {
+        val elem = enum.nextElement()
+        if(p(elem)) {
+          f(elem)
+        }
+      }
+    }
 }

@@ -17,10 +17,10 @@
 package mlpipe.collection
 package mutable
 
-import mlpipe.collection.ops.SeqOps
+import mlpipe.collection.ops.{MapOps, SeqOps}
 
-import scala.collection.generic.{CanBuildFrom, GenericCompanion, SeqFactory}
-import scala.collection.mutable.{Seq ⇒ MSeq}
+import scala.collection.generic.{CanBuildFrom, GenericCompanion}
+import scala.collection.mutable.{Seq ⇒ MSeq, Map ⇒ MMap}
 import scala.collection.{Seq ⇒ CSeq}
 import scala.language.higherKinds
 
@@ -30,14 +30,9 @@ import scala.language.higherKinds
  */
 object Seq extends SeqOps {
   final type SeqImpl[X] = MSeq[X]
+  final type MapImpl[K, V] = MMap[K, V]
 
-  private[this] object localSeqFactory extends SeqFactory[SeqImpl] {
-    import scala.collection.mutable.{ArrayBuffer, Builder}
-
-    implicit def canBuildFrom[A]: CanBuildFrom[Coll, A, MSeq[A]] = ReusableCBF.asInstanceOf[GenericCanBuildFrom[A]]
-    def newBuilder[A]: Builder[A, MSeq[A]] = new ArrayBuffer
-  }
-
-  final implicit def canBuildFrom[A, B]: CanBuildFrom[CSeq[A], B, MSeq[B]] = localSeqFactory.canBuildFrom.asInstanceOf[CanBuildFrom[CSeq[A], B, MSeq[B]]]
-  final val SeqImplC: GenericCompanion[MSeq] = MSeq
+  protected val MapBuddy: MapOps = mutable.Map
+  protected final implicit def canBuildFrom[A, B] = MSeq.canBuildFrom.asInstanceOf[CanBuildFrom[CSeq[A], B, SeqImpl[B]]]
+  protected final val SeqImplC: GenericCompanion[MSeq] = MSeq
 }

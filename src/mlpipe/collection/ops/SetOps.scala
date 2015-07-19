@@ -77,13 +77,18 @@ trait SetOps {
     case None ⇒ apply()
   }
 
-  final def ofJava[A]: java.util.Collection[A] ⇒ SetImpl[A] = it ⇒ {
+  final def ofJCollection[A]: java.util.Collection[A] ⇒ SetImpl[A] = it ⇒ {
     import scala.collection.JavaConverters._
     it.asScala.to[SetImpl]
   }
 
-  final def ofEnumSet[E <: Enum[E]](cls: Class[E]): SetImpl[E] =
-    ofJava(java.util.EnumSet.allOf(cls))
+  final def ofJEnum[A]: java.util.Enumeration[A] ⇒ SetImpl[A] = it ⇒ {
+    import scala.collection.JavaConverters._
+    it.asScala.to[SetImpl]
+  }
+
+  final def ofJEnumSet[E <: Enum[E]](cls: Class[E]): SetImpl[E] =
+    ofJCollection(java.util.EnumSet.allOf(cls))
 
   final def ofMapValuesSortedBy[A, B, C](sortBy: (B) ⇒ C)(implicit ord: Ordering[C]): CMap[A, B] ⇒ SetImpl[B] =
     map ⇒ apply(map.toSeq.sortBy(kv ⇒ sortBy(kv._2)).map(_._2):_*)

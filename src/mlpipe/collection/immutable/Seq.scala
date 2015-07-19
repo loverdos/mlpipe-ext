@@ -17,11 +17,11 @@
 package mlpipe.collection
 package immutable
 
-import mlpipe.collection.ops.SeqOps
+import mlpipe.collection.ops.{MapOps, SeqOps}
 
+import scala.collection.generic.{CanBuildFrom, GenericCompanion}
+import scala.collection.immutable.{Seq ⇒ ImSeq, Map ⇒ ImMap}
 import scala.collection.{Seq ⇒ CSeq}
-import scala.collection.generic.{CanBuildFrom, GenericCompanion, SeqFactory}
-import scala.collection.immutable.{Seq ⇒ ImSeq}
 import scala.language.higherKinds
 
 /**
@@ -30,14 +30,9 @@ import scala.language.higherKinds
  */
 object Seq extends SeqOps {
   final type SeqImpl[X] = ImSeq[X]
+  final type MapImpl[K, V] = ImMap[K, V]
 
-  private[this] object localSeqFactory extends SeqFactory[SeqImpl] {
-    import scala.collection.mutable.{Builder, ListBuffer}
-
-    implicit def canBuildFrom[A]: CanBuildFrom[Coll, A, ImSeq[A]] = ReusableCBF.asInstanceOf[GenericCanBuildFrom[A]]
-    def newBuilder[A]: Builder[A, ImSeq[A]] = new ListBuffer
-  }
-
-  final implicit def canBuildFrom[A, B]: CanBuildFrom[CSeq[A], B, ImSeq[B]] = localSeqFactory.canBuildFrom.asInstanceOf[CanBuildFrom[CSeq[A], B, ImSeq[B]]]
-  final val SeqImplC: GenericCompanion[ImSeq] = ImSeq
+  protected val MapBuddy: MapOps = immutable.Map
+  protected final implicit def canBuildFrom[A, B] = ImSeq.canBuildFrom.asInstanceOf[CanBuildFrom[CSeq[A], B, SeqImpl[B]]]
+  protected final val SeqImplC: GenericCompanion[ImSeq] = ImSeq
 }

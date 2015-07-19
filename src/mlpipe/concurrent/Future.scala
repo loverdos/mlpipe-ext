@@ -17,82 +17,52 @@
 package mlpipe
 package concurrent
 
-import scala.concurrent.duration.Duration
-import scala.concurrent.{Await, ExecutionContext}
-import scala.concurrent.{Future ⇒ ScalaFuture}
-import scala.concurrent.{Promise ⇒ ScalaPromise}
 import mlpipe.collection.Seq
+
+import scala.concurrent.duration.Duration
+import scala.concurrent.{Await, ExecutionContext ⇒ EC, Future ⇒ SFuture, Promise ⇒ SPromise}
 
 /**
  *
  * @author Christos KK Loverdos <loverdos@gmail.com>
  */
+// FIXME Make a FutureOps
 object Future {
-  @inline final def filter[A](p: (A) ⇒ Boolean)
-                    (implicit ec: ExecutionContext = ExecutionContext.Implicits.global): ScalaFuture[A] ⇒ ScalaFuture[A] =
-    _.filter(p)
+  private[this] val global = EC.Implicits.global
 
-  @inline final def filterSeq[A](p: (A) ⇒ Boolean)
-                    (implicit ec: ExecutionContext = ExecutionContext.Implicits.global): ScalaFuture[Seq[A]] ⇒ ScalaFuture[Seq[A]] =
-    _.map(_.filter(p))
+  final def filter[A](p: (A) ⇒ Boolean)(implicit ec: EC = global): SFuture[A] ⇒ SFuture[A] = _.filter(p)
 
-  @inline final def foreach[A](f: (A) ⇒ Unit)
-                    (implicit ec: ExecutionContext = ExecutionContext.Implicits.global): ScalaFuture[A] ⇒ Unit =
-    _.foreach(f)
+  final def filterSeq[A](p: (A) ⇒ Boolean)(implicit ec: EC = global): SFuture[Seq[A]] ⇒ SFuture[Seq[A]] = _.map(_.filter(p))
 
-  @inline final def foreachSeq[A](f: (A) ⇒ Unit)
-                    (implicit ec: ExecutionContext = ExecutionContext.Implicits.global): ScalaFuture[Seq[A]] ⇒ Unit =
-    _.foreach(_.foreach(f))
+  final def foreach[A](f: (A) ⇒ Unit)(implicit ec: EC = global): SFuture[A] ⇒ Unit = _.foreach(f)
 
-  @inline final def filterDefined[A]
-                    (implicit ec: ExecutionContext = ExecutionContext.Implicits.global): ScalaFuture[Option[A]] ⇒ ScalaFuture[A] =
-    _.withFilter(_.isDefined).map(_.get)
+  final def foreachSeq[A](f: (A) ⇒ Unit)(implicit ec: EC = global): SFuture[Seq[A]] ⇒ Unit = _.foreach(_.foreach(f))
 
-  @inline final def filterSeqDefined[A]
-                    (implicit ec: ExecutionContext = ExecutionContext.Implicits.global): ScalaFuture[Seq[Option[A]]] ⇒ ScalaFuture[Seq[A]] =
-    _.map(Seq.filterDefined)
+  final def filterDefined[A](implicit ec: EC = global): SFuture[Option[A]] ⇒ SFuture[A] = _.withFilter(_.isDefined).map(_.get)
 
-  @inline final def map[A, B](f: (A) ⇒ B)
-                    (implicit ec: ExecutionContext = ExecutionContext.Implicits.global): ScalaFuture[A] ⇒ ScalaFuture[B] =
-    _.map(f)
+  final def filterSeqDefined[A](implicit ec: EC = global): SFuture[Seq[Option[A]]] ⇒ SFuture[Seq[A]] = _.map(Seq.filterDefined)
 
-  @inline final def mapSeq[A, B](f: (A) ⇒ B)
-                    (implicit ec: ExecutionContext = ExecutionContext.Implicits.global): ScalaFuture[Seq[A]] ⇒ ScalaFuture[Seq[B]] =
-    _.map(_.map(f))
+  final def map[A, B](f: (A) ⇒ B)(implicit ec: EC = global): SFuture[A] ⇒ SFuture[B] = _.map(f)
 
-  @inline final def flatMap[A, B](f: (A) ⇒ ScalaFuture[B])
-                    (implicit ec: ExecutionContext = ExecutionContext.Implicits.global): ScalaFuture[A] ⇒ ScalaFuture[B] =
-    _.flatMap(f)
+  final def mapSeq[A, B](f: (A) ⇒ B)(implicit ec: EC = global): SFuture[Seq[A]] ⇒ SFuture[Seq[B]] = _.map(_.map(f))
 
-  @inline final def awaitCompletion[A](atMost: Duration)
-                    (implicit ec: ExecutionContext = ExecutionContext.Implicits.global): ScalaFuture[A] ⇒ ScalaFuture[A] =
-    Await.ready(_, atMost)
+  final def flatMap[A, B](f: (A) ⇒ SFuture[B])(implicit ec: EC = global): SFuture[A] ⇒ SFuture[B] = _.flatMap(f)
 
-  @inline final def awaitResult[A](atMost: Duration): ScalaFuture[A] ⇒ A =
-    Await.result(_, atMost)
+  final def awaitCompletion[A](atMost: Duration)(implicit ec: EC = global): SFuture[A] ⇒ SFuture[A] = Await.ready(_, atMost)
 
-  @inline final def fold[Z, A](zero: Z)(f: (Z, A) ⇒ Z)
-                    (implicit ec: ExecutionContext = ExecutionContext.Implicits.global): Seq[ScalaFuture[A]] ⇒ ScalaFuture[Z] =
-    ScalaFuture.fold(_)(zero)(f)
+  final def awaitResult[A](atMost: Duration): SFuture[A] ⇒ A = Await.result(_, atMost)
 
-  // ML-ish
-  @inline final def ofValue[A]: A ⇒ ScalaFuture[A] = ScalaFuture.successful
+  final def fold[Z, A](zero: Z)(f: (Z, A) ⇒ Z)(implicit ec: EC = global): Seq[SFuture[A]] ⇒ SFuture[Z] = SFuture.fold(_)(zero)(f)
 
-  @inline final def ofComputation[A]
-                    (implicit ec: ExecutionContext = ExecutionContext.Implicits.global): (⇒A) ⇒ ScalaFuture[A] =
-    ScalaFuture(_)
+  final def ofValue[A]: A ⇒ SFuture[A] = SFuture.successful
 
-  @inline final def ofPromise[A]: ScalaPromise[A] ⇒ ScalaFuture[A] = _.future
+  final def ofComputation[A](implicit ec: EC = global): (⇒A) ⇒ SFuture[A] = SFuture(_)
 
-  @inline final def ofSeqFuture[A]
-                    (implicit ec: ExecutionContext = ExecutionContext.Implicits.global): Seq[ScalaFuture[A]] ⇒ ScalaFuture[Seq[A]] =
-    ScalaFuture.sequence[A, Seq]
+  final def ofPromise[A]: SPromise[A] ⇒ SFuture[A] = _.future
 
-  @inline final def iter[A](f: (A) ⇒ Unit)
-                    (implicit ec: ExecutionContext = ExecutionContext.Implicits.global): ScalaFuture[A] ⇒ Unit =
-    _.foreach(f)
+  final def ofSeqFuture[A](implicit ec: EC = global): Seq[SFuture[A]] ⇒ SFuture[Seq[A]] = SFuture.sequence[A, Seq]
 
-  @inline final def iterSeq[A](f: (A) ⇒ Unit)
-                    (implicit ec: ExecutionContext = ExecutionContext.Implicits.global): ScalaFuture[Seq[A]] ⇒ Unit =
-    _.foreach(_.foreach(f))
+  final def iter[A](f: (A) ⇒ Unit)(implicit ec: EC = global): SFuture[A] ⇒ Unit = _.foreach(f)
+
+  final def iterSeq[A](f: (A) ⇒ Unit)(implicit ec: EC = global): SFuture[Seq[A]] ⇒ Unit = _.foreach(_.foreach(f))
 }

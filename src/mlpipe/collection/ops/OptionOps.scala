@@ -58,8 +58,8 @@ trait OptionOps {
 
   final def ofArray[A]: Array[A] ⇒ Option[A] = _.headOption
 
-  final def apply[A](a: A): Option[A] = Option(a)
+  final def apply[A]: A ⇒ Option[A] = Option(_)
 
-  final def ofAny[A]: A ⇒ Option[A] = apply
+  final def of[A]: A ⇒ Option[A] = Option(_)
 }
 

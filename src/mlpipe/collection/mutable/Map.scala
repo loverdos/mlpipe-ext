@@ -14,12 +14,23 @@
  * limitations under the License.
  */
 
-package mlpipe
+package mlpipe.collection.mutable
+
+import mlpipe.collection.ops.MapOps
+
+import scala.collection.generic.CanBuildFrom
+import scala.collection.mutable.{Map ⇒ MMap}
+import scala.collection.{Map ⇒ CMap, Seq ⇒ CSeq, Set ⇒ CSet}
 
 /**
  *
  * @author Christos KK Loverdos <loverdos@gmail.com>
  */
-object IVal {
-  @inline final def unsafeCast[T]: (Any) ⇒ T = _.asInstanceOf[T]
+object Map extends MapOps {
+  final type MapImpl[K, V] = MMap[K, V]
+
+  protected implicit def canBuildFrom[A, B] = MMap.canBuildFrom.asInstanceOf[CanBuildFrom[CMap[A, B], (A, B), MapImpl[A, B]]]
+
+//  final val MapImplF = MMap
+  def empty[A, B] = MMap.empty[A, B]
 }
