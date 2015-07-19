@@ -14,29 +14,12 @@
  * limitations under the License.
  */
 
-package mlpipe.collection
-
-import java.{util ⇒ ju}
+package mlpipe
 
 /**
  *
  * @author Christos KK Loverdos <loverdos@gmail.com>
  */
-object JEnumeration {
-  @inline final def iter[A](f: (A) ⇒ Unit): ju.Enumeration[A] ⇒ Unit =
-    enum ⇒ {
-      while(enum.hasMoreElements) {
-        f(enum.nextElement())
-      }
-    }
-
-  @inline def filterIter[A](p: (A) ⇒ Boolean)(f: (A) ⇒ Unit): ju.Enumeration[A] ⇒ Unit =
-    enum ⇒ {
-      while(enum.hasMoreElements) {
-        val elem = enum.nextElement()
-        if(p(elem)) {
-          f(elem)
-        }
-      }
-    }
+object Val {
+  final def unsafeCast[T]: (Any) ⇒ T = _.asInstanceOf[T]
 }

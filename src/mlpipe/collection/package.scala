@@ -15,6 +15,7 @@ package object collection {
   final val Set = immutable.Set
   final val Map = immutable.Map
   final val Stream = immutable.Stream
+  final val List = immutable.List
   final val Traversable = generic.Traversable
 
   final val JList = mutable.JList

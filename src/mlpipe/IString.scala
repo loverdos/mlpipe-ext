@@ -21,7 +21,6 @@ package mlpipe
  * @author Christos KK Loverdos <loverdos@gmail.com>
  */
 object IString {
-  @inline
   final def ifEmpty(alt: String): String ⇒ String = {
     case "" ⇒ alt
     case s  ⇒ s

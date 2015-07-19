@@ -16,12 +16,12 @@
 
 package mlpipe.concurrent
 
-import scala.concurrent.{Promise ⇒ ScalaPromise}
+import scala.concurrent.{Promise ⇒ SPromise}
 
 /**
   *
   * @author Christos KK Loverdos <loverdos@gmail.com>
   */
 object Promise {
-   @inline final def ofValue[T]: T ⇒ ScalaPromise[T] = ScalaPromise.successful
+   final def ofValue[T]: T ⇒ SPromise[T] = SPromise.successful
  }
