@@ -4,9 +4,9 @@
 
 package mlpipe.collection.ops
 
-import scala.collection.generic.{MapFactory, CanBuildFrom, GenMapFactory}
-import scala.collection.{Map ⇒ CMap, Seq ⇒ CSeq, Set ⇒ CSet, MapLike, GenMapLike, GenTraversableOnce}
+import scala.collection.generic.CanBuildFrom
 import scala.collection.mutable.{Builder ⇒ MBuilder}
+import scala.collection.{GenTraversableOnce, Map ⇒ CMap, Seq ⇒ CSeq, Set ⇒ CSet}
 import scala.language.higherKinds
 
 trait MapOps {

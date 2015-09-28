@@ -20,6 +20,8 @@ trait OptionOps {
     case some ⇒ some
   }
 
+  final def fold[A, B](ifNone: ⇒B)(ifSome: (A) ⇒ B): Option[A] ⇒ B = _.fold(ifNone)(ifSome)
+  
   final def map[A, B](f: (A) ⇒ B): Option[A] ⇒ Option[B] = _.map(f)
 
   final def mapFirst[A]: Option[(A, _)] ⇒ Option[A] = _.map(_._1)
