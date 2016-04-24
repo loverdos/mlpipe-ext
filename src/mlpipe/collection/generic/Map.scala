@@ -20,7 +20,7 @@ package generic
 import mlpipe.collection.ops.MapOps
 
 import scala.collection.generic.CanBuildFrom
-import scala.collection.{Map ⇒ CMap, Seq ⇒ CSeq, Set ⇒ CSet}
+import scala.collection.{Map ⇒ CMap}
 
 /**
  *

@@ -22,7 +22,6 @@ import mlpipe.collection.ops.{MapOps, SeqOps}
 import scala.collection.generic.{CanBuildFrom, GenericCompanion}
 import scala.collection.mutable.{Seq ⇒ MSeq, Map ⇒ MMap}
 import scala.collection.{Seq ⇒ CSeq}
-import scala.language.higherKinds
 
 /**
  *

@@ -7,8 +7,7 @@ package ops
 
 import scala.collection.generic.{CanBuildFrom, GenericCompanion}
 import scala.collection.immutable.{List, Map ⇒ ImMap}
-import scala.collection.{Map ⇒ CMap, Seq ⇒ CSeq, Set ⇒ CSet}
-import scala.language.higherKinds
+import scala.collection.{Seq ⇒ CSeq}
 
 trait ListOps extends SeqOps {
   final type SeqImpl[X] = List[X]
