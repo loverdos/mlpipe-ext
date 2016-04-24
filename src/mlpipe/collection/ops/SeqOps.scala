@@ -44,6 +44,10 @@ trait SeqOps {
 
   final def foreach[A, U](f: (A) ⇒ U): SeqImpl[A] ⇒ Unit = _.foreach(f)
 
+  final def foldLeft[A, B](z: B)(f: (B, A) ⇒ B): SeqImpl[A] ⇒ B = _.foldLeft(z)(f)
+
+  final def foldRight[A, B](z: B)(f: (A, B) ⇒ B): SeqImpl[A] ⇒ B = _.foldRight(z)(f)
+
   final def filter[A](p: (A) ⇒ Boolean): SeqImpl[A] ⇒ SeqImpl[A] = _.filter(p).asInstanceOf[SeqImpl[A]]
 
   final def partition[A](f: (A) ⇒ Boolean): SeqImpl[A] ⇒ (SeqImpl[A], SeqImpl[A]) = _.partition(f).asInstanceOf[(SeqImpl[A], SeqImpl[A])]
